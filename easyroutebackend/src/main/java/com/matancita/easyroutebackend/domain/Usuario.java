@@ -14,11 +14,17 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  *
@@ -26,24 +32,29 @@ import java.util.List;
  */
 @Entity
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@Table(name="user")
 public class Usuario implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id_usuario")
+    @Column(name="id_usuario", nullable = false, updatable = false)
     private Long idUsuario;
 
+    @Column(nullable = false, unique = true)
     private String username;
 
+    @Column(nullable = false)
     private String password;
 
     private int estatus;
     
-    @JsonIgnore
-    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
-    private List<Rol> roles;
+     @ManyToMany(fetch = FetchType.LAZY)
+     @JoinTable(  name = "user_roles", 
+        joinColumns = @JoinColumn(name = "id_usuario"), 
+        inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles = new HashSet<>();
     
     @JsonIgnore
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
@@ -66,6 +77,11 @@ public class Usuario implements Serializable {
         this.estatus = estatus;
         this.empresa = empresa;
         this.cobrador = cobrador;
+    }
+
+     public Usuario(String username, String password) {
+        this.username = username;
+        this.password = password;
     }
 
     public Long getIdUsuario() {
@@ -100,14 +116,14 @@ public class Usuario implements Serializable {
         this.estatus = estatus;
     }
 
-    public List<Rol> getRoles() {
-        return roles;
-    }
+    
+public Set<Role> getRoles() {
+    return roles;
+}
 
-    public void setRoles(List<Rol> roles) {
-        this.roles = roles;
-    }
-
+public void setRoles(Set<Role> roles) {
+    this.roles = roles;
+}
     public Empresa getEmpresa() {
         return empresa;
     }
