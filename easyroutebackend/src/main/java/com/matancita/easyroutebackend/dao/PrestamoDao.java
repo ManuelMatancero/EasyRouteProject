@@ -4,6 +4,7 @@ package com.matancita.easyroutebackend.dao;
 import com.matancita.easyroutebackend.domain.Prestamo;
 
 import java.util.List;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -11,7 +12,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
 @RepositoryRestResource(path="prestamos")
-public interface PrestamoDao extends CrudRepository<Prestamo, Long> {
+public interface PrestamoDao extends JpaRepository<Prestamo, Long> {
 
     //Fetch prestamos by cliente id
     List<Prestamo> findByClienteIdCliente(@Param("idCliente") Long idCliente);

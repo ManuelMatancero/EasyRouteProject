@@ -11,6 +11,9 @@ import com.matancita.easyroutebackend.dao.PrestamoDao;
 import com.matancita.easyroutebackend.domain.Pagare;
 import com.matancita.easyroutebackend.domain.Prestamo;
 import com.matancita.easyroutebackend.specialfunctions.WeeklyDatesCalculator;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 @Service
 public class PrestamoServiceImpl implements PrestamoService {
@@ -35,5 +38,16 @@ public class PrestamoServiceImpl implements PrestamoService {
         pagareDao.saveAll(pagares);
         return ResponseEntity.ok(prestamo);
     }
+
+    @Override
+    public Page<Prestamo> findAllByPage(Pageable pageable) {
+        Pageable firstPageWithTenElements = PageRequest.of(0, 10);
+        
+        Page<Prestamo> tenPrestamos = prestamoDao.findAll(pageable);
+        
+        return tenPrestamos;
+    }
+    
+    
     
 }
